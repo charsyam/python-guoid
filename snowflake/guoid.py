@@ -17,7 +17,7 @@ sequenceBits = 12
 workerIdShift = sequenceBits
 datacenterIdShift = sequenceBits + workerIdBits
 timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits
-sequenceMask = 4095
+sequenceMask = (1 << sequenceBits) - 1
 
 def getWorkerIdFor(ip):
     h = 0
