@@ -10,6 +10,6 @@ setup(name='guoid',
       url='https://github.com/charsyam/python-quoid',
       platforms='any',
       install_requires=['bottle'],
-      packages=['snowflake'],
-      scripts=['snowflake/guoid.py']
+      packages=['guoid'],
+      scripts=['guoid/guoid.py']
       )

@@ -1,4 +1,7 @@
 import socket, os
+import time
+
+guoidEpoch = time.mktime((2012, 12, 1, 0, 0, 0, 0, 0, 0))
 
 if os.name != "nt":
     import fcntl
@@ -30,3 +33,47 @@ def get_local_ip():
             except IOError:
                 pass
     return ip
+
+def get_timestamp():
+    global guoidEpoch
+    now = int((time.time() - guoidEpoch) * 1000)
+    return now
+
+def til_next_millis(last):
+    timestamp = get_timestamp()
+    while (timestamp <= last):
+        timestamp = get_timestamp()
+
+    return timestamp
+
+def guoid_hash(string):
+    h = 0
+
+    for s in string:
+        h = ord(s) + h * 127
+
+    return h
+
+def guoid_hex(n):
+    x = (n % 16)
+    c = ""
+    if (x < 10):
+        c = x
+    if (x == 10):
+        c = "a"
+    if (x == 11):
+        c = "b"
+    if (x == 12):
+        c = "c"
+    if (x == 13):
+        c = "d"
+    if (x == 14):
+        c = "e"
+    if (x == 15):
+        c = "f"
+
+    if (n - x != 0):
+        return guoid_hex(n / 16) + str(c)
+    else:
+        return str(c)
+
