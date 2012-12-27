@@ -42,6 +42,10 @@ def init_server(did):
     datacenterId = did 
     workerId = (getWorkerIdFor(get_local_ip()) & 32)
 
+def start_server(host='localhost', port=8080):
+    init_server(0)
+    run(host=host, port=port)
+
 @route('/guoid')
 def guoid():
     global lastTimestamp, workerId, sequence
@@ -65,5 +69,4 @@ def guoid():
     return template('{{guoidValue}}', guoidValue=str(guoidValue))
 
 if __name__=="__main__":
-    init_server(0)
-    run(host='localhost', port=8080)
+    start_server(host='localhost', port=8080)
