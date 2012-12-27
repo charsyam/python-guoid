@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='guoid',
       version='0.1',
@@ -9,6 +9,7 @@ setup(name='guoid',
       author_email='charsyam@gmail.com',
       url='https://github.com/charsyam/python-quoid',
       platforms='any',
+      install_requires=['bottle'],
       packages=['snowflake'],
       scripts=['snowflake/guoid.py']
       )
