@@ -9,5 +9,6 @@ setup(name='guoid',
       author_email='charsyam@gmail.com',
       url='https://github.com/charsyam/python-quoid',
       platforms='any',
-      packages=['snowflake']
+      packages=['snowflake'],
+      scripts=['bin/snowflake']
       )
