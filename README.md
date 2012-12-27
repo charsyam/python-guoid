@@ -10,5 +10,6 @@ Usage
 python guoid.py
 
 http://localhost:8080/snowflake -> snowflake style
+
 http://localhost:8080/instagram/id -> instagram style
 * instagram style uses logical sharding through id
