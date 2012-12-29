@@ -39,12 +39,25 @@ def start_server(host='localhost', port=8080):
     init_server(0)
     run(host=host, port=port)
 
-@route('/snowflake')
+@route('/v1/snowflake')
 def get_snowflake():
-    return template('{{guoidValue}}', guoidValue=guoid_hex(snowflake()))
+    global datacenterId, workerId
+    return template('{{guoidValue}}',
+                    guoidValue=guoid_hex(snowflake(datacenterId, workerId)))
+
+@route('/v2/snowflake/:did/:wid')
+def get_snowflake_v2(did, wid):
+    did = int(did)
+    wid = int(wid)
+    return template('{{guoidValue}}',
+                    guoidValue=guoid_hex(snowflake(did, wid)))
     
-def snowflake():
-    global lastTimestamp, workerId, sequence, sequenceMask
+def snowflake(datacenterId, workerId):
+    global lastTimestamp, sequence, sequenceMask
+
+    datacenterId = datacenterId & datacenterIdBits
+    workerId = workerId & workerIdBits
+
     timestamp = get_timestamp()
     if (timestamp < lastTimestamp):
         raise "Clock moved backwards"
@@ -64,7 +77,7 @@ def snowflake():
 
     return guoidValue
 
-@route('/instagram/:id')
+@route('/v1/instagram/:id')
 def get_instagram(id):
     return template('{{guoidValue}}', guoidValue=guoid_hex(instagram(id)))
 
