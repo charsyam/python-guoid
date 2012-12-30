@@ -1,11 +1,12 @@
 from bottle import route, run, template
 from utils import get_timestamp, til_next_millis
 from utils import guoid_hex, get_local_ip, guoid_hash
+import time
 
 datacenterId = 0
 pid = 0
 workerId = 0
-lastTimestamp = 0
+lastTimestamp = -1
 sequence = 0
 
 workerIdBits = 5
@@ -21,6 +22,8 @@ workerIdMask = (1 << workerIdBits) - 1
 logicalShardIdBits = workerIdBits + datacenterIdBits
 logicalShardIdMask = (1 << logicalShardIdBits) - 1
 logicalShardIdShift = sequenceBits 
+
+epoch = time.mktime((2012, 12, 1, 0, 0, 0, 0, 0, 0))
 
 def getWorkerIdFor(ip):
     global workerIdMask
@@ -39,20 +42,26 @@ def start_server(host='localhost', port=8080):
     init_server(0)
     run(host=host, port=port)
 
+def init_guoid():
+    global lastTimestamp, sequence
+    lastTimestamp = -1
+    sequence = 0
+
 @route('/v1/snowflake')
 def get_snowflake():
-    global datacenterId, workerId
+    global datacenterId, workerId, epoch
     return template('{{guoidValue}}',
-                    guoidValue=guoid_hex(snowflake(datacenterId, workerId)))
+                    guoidValue=guoid_hex(snowflake(datacenterId, workerId, epoch)))
 
 @route('/v2/snowflake/:did/:wid')
 def get_snowflake_v2(did, wid):
+    global epoch
     did = int(did)
     wid = int(wid)
     return template('{{guoidValue}}',
-                    guoidValue=guoid_hex(snowflake(did, wid)))
+                    guoidValue=guoid_hex(snowflake(did, wid, epoch)))
     
-def snowflake(datacenterId, workerId):
+def snowflake(datacenterId, workerId, epoch):
     global lastTimestamp, sequence, sequenceMask
 
     datacenterId = datacenterId & datacenterIdBits
@@ -70,6 +79,8 @@ def snowflake(datacenterId, workerId):
         sequence = 0
     
     lastTimestamp = timestamp
+    timestamp = timestamp - (int(epoch*1000))
+
     guoidValue = (timestamp << timestampLeftShift) |\
                  (datacenterId << datacenterIdShift) |\
                  (workerId << workerIdShift) |\
@@ -79,9 +90,10 @@ def snowflake(datacenterId, workerId):
 
 @route('/v1/instagram/:id')
 def get_instagram(id):
-    return template('{{guoidValue}}', guoidValue=guoid_hex(instagram(id)))
+    global epoch
+    return template('{{guoidValue}}', guoidValue=guoid_hex(instagram(id, epoch)))
 
-def instagram(id):
+def instagram(id, epoch):
     global lastTimestamp, sequence, sequenceMask
     global logicalShardIdMask, logicalShardIdBits
 
@@ -98,6 +110,7 @@ def instagram(id):
     
     logicalShardId = getUserLogicalShardId(id)
     lastTimestamp = timestamp
+    timestamp = timestamp - (int(epoch)*1000)
     guoidValue = (timestamp << timestampLeftShift) |\
                  (logicalShardId << logicalShardIdShift) |\
                  sequence

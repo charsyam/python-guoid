@@ -1,8 +1,6 @@
 import socket, os
 import time
 
-guoidEpoch = time.mktime((2012, 12, 1, 0, 0, 0, 0, 0, 0))
-
 if os.name != "nt":
     import fcntl
     import struct
@@ -35,8 +33,7 @@ def get_local_ip():
     return ip
 
 def get_timestamp():
-    global guoidEpoch
-    now = int((time.time() - guoidEpoch) * 1000)
+    now = int((time.time()) * 1000)
     return now
 
 def til_next_millis(last):
