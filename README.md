@@ -10,6 +10,7 @@ Usage
 python guoid.py
 
 http://localhost:8080/v1/snowflake -> snowflake style
+
 http://localhost:8080/v2/snowflake/datacenterId/workerId -> snowflake style
 * you can assign datacenterId and worker Id using v2
 
