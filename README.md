@@ -17,6 +17,17 @@ http://localhost:8080/v2/snowflake/datacenterId/workerId -> snowflake style
 http://localhost:8080/v1/instagram/id -> instagram style
 * instagram style uses logical sharding through id
 
+pip install
+============================================================================
+pip install guoid
+
+```python
+import guoid.guoid
+
+guoid.guoid.snowflake(0,0,0)
+guoid.guoid.instagram('guoid', 0)
+```
+
 Run tests
 ============================================================================
 python-guoid uses noses
