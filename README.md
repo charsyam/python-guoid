@@ -5,33 +5,49 @@ Python guoid is python clone project of Twitter SnowFlake and Instagram Style
 
 Twitter SnowFlake : https://github.com/twitter/snowflake
 
-Usage
-============================================================================
-python guoid.py
-
-http://localhost:8080/v1/snowflake -> snowflake style
-
-http://localhost:8080/v2/snowflake/datacenterId/workerId -> snowflake style
-* you can assign datacenterId and worker Id using v2
-
-http://localhost:8080/v1/instagram/id -> instagram style
-* instagram style uses logical sharding through id
-
 pip install
 ============================================================================
 pip install guoid
 
 ```python
-import guoid.guoid
+import guoid
 
-guoid.guoid.snowflake(0,0,0)
-guoid.guoid.instagram('guoid', 0)
+guid = guoid.SnowFlake(datacenter_id, worker_id)
+guid.next()
 ```
 
-Run tests
-============================================================================
-python-guoid uses noses
+```python
+import guoid
 
-pip install noses
+guid = guoid.Instagram()
+id = 'charsyam'
+shard_id = your_own_shard_function(id)
+guid.next(shard_id)
+```
 
+```python
+from guoid import SnowFlake
+import time
+
+epoch = time.mktime((2014,1,1,0,0,0,0,0,0))
+guid = SnowFlake(datacenter_id, worker_id, epoch)
+guid.next()
+```
+
+```python
+from guoid import Instagram
+import time
+
+epoch = time.mktime((2014,1,1,0,0,0,0,0,0))
+guid = Instagram(epoch)
+id = 'charsyam'
+shard_id = your_own_shard_function(id)
+guid.next(shard_id)
+```
+
+test
+===========================================================================
+pip install mock noses
+```shell
 nosetests
+```
